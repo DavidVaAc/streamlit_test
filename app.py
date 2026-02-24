@@ -3,17 +3,20 @@ import scipy.stats
 import streamlit as st
 import time
 
-# estas son variables de estado que se conservan cuando Streamlin vuelve a ejecutar este script
+# Estas son variables de estado que se conservan cuando Streamlin vuelve a ejecutar este script
 if 'experiment_no' not in st.session_state:
     st.session_state['experiment_no'] = 0
 
 if 'df_experiment_results' not in st.session_state:
     st.session_state['df_experiment_results'] = pd.DataFrame(columns=['no', 'iteraciones', 'media'])
 
+# Encabezado de la aplicación
 st.header('Lanzar una moneda')
 
+# Gráfico para mostrar la media de los resultados a medida que se lanzan las monedas
 chart = st.line_chart([0.5])
 
+# Función para simular el lanzamiento de una moneda n veces y calcular la media de los resultados
 def toss_coin(n):
 
     trial_outcomes = scipy.stats.bernoulli.rvs(p=0.5, size=n)
@@ -27,14 +30,16 @@ def toss_coin(n):
         if r == 1:
             outcome_1_count += 1
         mean = outcome_1_count / outcome_no
-        chart.add_rows([mean])
-        time.sleep(0.05)
+        chart.add_rows([mean]) # Agrega el nuevo valor de la media al gráfico
+        time.sleep(0.05) # Pausa para que el gráfico se actualice de manera visible
 
     return mean
 
-number_of_trials = st.slider('¿Número de intentos?', 1, 1000, 10)
+# Interfaz de usuario para configurar el número de lanzamientos y ejecutar el experimento
+number_of_trials = st.slider('¿Número de intentos?', 1, 1000, 10) # El tercer argumento es el valor por defecto del slider
 start_button = st.button('Ejecutar')
 
+# Lógica para ejecutar el experimento cuando se presiona el botón
 if start_button:
     st.write(f'Experimento con {number_of_trials} intentos en curso.')
     st.session_state['experiment_no'] += 1
